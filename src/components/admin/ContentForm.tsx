@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import { Upload, FileVideo } from "lucide-react";
 
 interface ContentFormProps {
   initialData?: Content;
@@ -31,6 +32,7 @@ const ContentForm = ({ initialData, onSubmit }: ContentFormProps) => {
       description: "",
       thumbnailUrl: "",
       bannerUrl: "",
+      videoUrl: "",
       trailerUrl: "",
       type: "movie",
       genre: [],
@@ -42,6 +44,9 @@ const ContentForm = ({ initialData, onSubmit }: ContentFormProps) => {
       trending: false,
     }
   );
+
+  const [selectedThumbnail, setSelectedThumbnail] = useState<File | null>(null);
+  const [selectedVideo, setSelectedVideo] = useState<File | null>(null);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -63,8 +68,28 @@ const ContentForm = ({ initialData, onSubmit }: ContentFormProps) => {
     setFormData((prev) => ({ ...prev, [name]: array }));
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, fileType: 'thumbnail' | 'video') => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      
+      // In a real app, you would upload this file to a server and get a URL back
+      const fileUrl = URL.createObjectURL(file);
+      
+      if (fileType === 'thumbnail') {
+        setSelectedThumbnail(file);
+        setFormData(prev => ({ ...prev, thumbnailUrl: fileUrl }));
+      } else if (fileType === 'video') {
+        setSelectedVideo(file);
+        setFormData(prev => ({ ...prev, videoUrl: fileUrl }));
+      }
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // In a real app, you would handle the file uploads here
+    // For now, we'll just use the existing form data
     onSubmit(formData);
   };
 
@@ -176,6 +201,37 @@ const ContentForm = ({ initialData, onSubmit }: ContentFormProps) => {
                 className="bg-netflix-mediumGray border-netflix-darkGray text-netflix-text"
               />
             </div>
+            
+            {/* Video Upload */}
+            <div>
+              <Label htmlFor="videoUpload" className="block mb-2">Video File</Label>
+              <div className="flex items-center gap-2">
+                <div className="relative flex-1">
+                  <Input
+                    id="videoUpload"
+                    type="file"
+                    accept="video/*"
+                    className="absolute inset-0 opacity-0 cursor-pointer z-10 h-full w-full"
+                    onChange={(e) => handleFileChange(e, 'video')}
+                  />
+                  <div className="bg-netflix-mediumGray border border-dashed border-netflix-lightGray rounded-md p-4 flex items-center justify-center gap-2 text-netflix-lightGray hover:bg-netflix-darkGray/50 h-12">
+                    <FileVideo className="h-5 w-5" />
+                    <span>{selectedVideo ? selectedVideo.name : "Select video file"}</span>
+                  </div>
+                </div>
+                {formData.videoUrl && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => window.open(formData.videoUrl, '_blank')}
+                    className="border-netflix-lightGray text-netflix-text hover:bg-netflix-mediumGray h-12"
+                  >
+                    Preview
+                  </Button>
+                )}
+              </div>
+            </div>
           </div>
 
           <div className="space-y-4">
@@ -192,16 +248,43 @@ const ContentForm = ({ initialData, onSubmit }: ContentFormProps) => {
               />
             </div>
 
+            {/* Thumbnail Upload */}
             <div>
-              <Label htmlFor="thumbnailUrl">Thumbnail URL</Label>
+              <Label htmlFor="thumbnailUpload" className="block mb-2">Thumbnail Image</Label>
+              <div className="flex items-center gap-2">
+                <div className="relative flex-1">
+                  <Input
+                    id="thumbnailUpload"
+                    type="file"
+                    accept="image/*"
+                    className="absolute inset-0 opacity-0 cursor-pointer z-10 h-full w-full"
+                    onChange={(e) => handleFileChange(e, 'thumbnail')}
+                  />
+                  <div className="bg-netflix-mediumGray border border-dashed border-netflix-lightGray rounded-md p-4 flex items-center justify-center gap-2 text-netflix-lightGray hover:bg-netflix-darkGray/50 h-12">
+                    <Upload className="h-5 w-5" />
+                    <span>{selectedThumbnail ? selectedThumbnail.name : "Select thumbnail image"}</span>
+                  </div>
+                </div>
+                {formData.thumbnailUrl && (
+                  <div className="w-12 h-12 bg-netflix-mediumGray rounded overflow-hidden border border-netflix-lightGray">
+                    <img
+                      src={formData.thumbnailUrl}
+                      alt="Thumbnail preview"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                )}
+              </div>
+              <p className="text-xs text-netflix-lightGray mt-1">
+                Or enter a URL:
+              </p>
               <Input
                 id="thumbnailUrl"
                 name="thumbnailUrl"
                 value={formData.thumbnailUrl}
                 onChange={handleChange}
                 placeholder="Enter thumbnail URL"
-                className="bg-netflix-mediumGray border-netflix-darkGray text-netflix-text"
-                required
+                className="bg-netflix-mediumGray border-netflix-darkGray text-netflix-text mt-1"
               />
             </div>
 

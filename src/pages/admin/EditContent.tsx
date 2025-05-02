@@ -82,6 +82,9 @@ const EditContent = () => {
         <div className="max-w-6xl mx-auto">
           <div className="mb-8">
             <h1 className="text-3xl font-bold">Edit Content</h1>
+            <p className="text-netflix-lightGray mt-2">
+              Update the information for your content.
+            </p>
           </div>
           
           <div className="bg-netflix-darkGray border border-netflix-mediumGray rounded-md p-6">

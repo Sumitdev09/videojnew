@@ -35,6 +35,9 @@ const AddContent = () => {
         <div className="max-w-6xl mx-auto">
           <div className="mb-8">
             <h1 className="text-3xl font-bold">Add New Content</h1>
+            <p className="text-netflix-lightGray mt-2">
+              Fill out the form below to add new content to the platform.
+            </p>
           </div>
           
           <div className="bg-netflix-darkGray border border-netflix-mediumGray rounded-md p-6">
