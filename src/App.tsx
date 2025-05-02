@@ -20,6 +20,9 @@ import WatchContent from "@/pages/WatchContent";
 import AdminDashboard from "@/pages/admin/AdminDashboard";
 import ManageUsers from "@/pages/admin/ManageUsers";
 import ManageContent from "@/pages/admin/ManageContent";
+import Movies from "@/pages/Movies";
+import Series from "@/pages/Series";
+import MyList from "@/pages/MyList";
 
 const queryClient = new QueryClient();
 
@@ -44,6 +47,21 @@ const App = () => (
             <Route path="/search" element={
               <ProtectedRoute>
                 <Search />
+              </ProtectedRoute>
+            } />
+            <Route path="/movies" element={
+              <ProtectedRoute>
+                <Movies />
+              </ProtectedRoute>
+            } />
+            <Route path="/series" element={
+              <ProtectedRoute>
+                <Series />
+              </ProtectedRoute>
+            } />
+            <Route path="/my-list" element={
+              <ProtectedRoute>
+                <MyList />
               </ProtectedRoute>
             } />
             <Route path="/subscription" element={

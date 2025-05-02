@@ -33,9 +33,12 @@ const Navbar = () => {
     navigate("/login");
   };
 
-  // Updated navLinks to match routes in App.tsx
+  // Added back the original navigation options
   const navLinks = [
     { to: "/", label: "Home" },
+    { to: "/movies", label: "Movies" },
+    { to: "/series", label: "TV Shows" },
+    { to: "/my-list", label: "My List" },
     { to: "/search", label: "Search" },
   ];
 
@@ -147,15 +150,6 @@ const Navbar = () => {
                   </Link>
                 </li>
               ))}
-              <li>
-                <Link
-                  to="/search"
-                  className="block text-sm text-gray-300 hover:text-white transition-colors"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  Search
-                </Link>
-              </li>
               <li>
                 <Link
                   to="/account"
