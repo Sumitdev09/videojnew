@@ -33,11 +33,10 @@ const Navbar = () => {
     navigate("/login");
   };
 
+  // Updated navLinks to match routes in App.tsx
   const navLinks = [
     { to: "/", label: "Home" },
-    { to: "/movies", label: "Movies" },
-    { to: "/series", label: "TV Shows" },
-    { to: "/my-list", label: "My List" },
+    { to: "/search", label: "Search" },
   ];
 
   if (isAdmin) {
