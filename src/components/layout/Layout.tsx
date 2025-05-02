@@ -6,11 +6,17 @@ interface LayoutProps {
   children: ReactNode;
   withNavbar?: boolean;
   className?: string;
+  fullScreen?: boolean;
 }
 
-const Layout = ({ children, withNavbar = true, className = "" }: LayoutProps) => {
+const Layout = ({ 
+  children, 
+  withNavbar = true, 
+  className = "",
+  fullScreen = false
+}: LayoutProps) => {
   return (
-    <div className={`min-h-screen bg-netflix-black text-netflix-text ${className}`}>
+    <div className={`min-h-screen bg-netflix-black text-netflix-text ${fullScreen ? 'w-screen overflow-hidden' : ''} ${className}`}>
       {withNavbar && <Navbar />}
       {children}
     </div>

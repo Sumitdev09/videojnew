@@ -14,6 +14,9 @@ import Login from "@/pages/Login";
 import Register from "@/pages/Register";
 import Search from "@/pages/Search";
 import Subscription from "@/pages/Subscription";
+import Account from "@/pages/Account";
+import ContentDetails from "@/pages/ContentDetails";
+import WatchContent from "@/pages/WatchContent";
 import AdminDashboard from "@/pages/admin/AdminDashboard";
 import ManageUsers from "@/pages/admin/ManageUsers";
 import ManageContent from "@/pages/admin/ManageContent";
@@ -33,9 +36,36 @@ const App = () => (
             <Route path="/register" element={<Register />} />
             
             {/* Protected Routes */}
-            <Route path="/" element={<Home />} />
-            <Route path="/search" element={<Search />} />
-            <Route path="/subscription" element={<Subscription />} />
+            <Route path="/" element={
+              <ProtectedRoute>
+                <Home />
+              </ProtectedRoute>
+            } />
+            <Route path="/search" element={
+              <ProtectedRoute>
+                <Search />
+              </ProtectedRoute>
+            } />
+            <Route path="/subscription" element={
+              <ProtectedRoute>
+                <Subscription />
+              </ProtectedRoute>
+            } />
+            <Route path="/account" element={
+              <ProtectedRoute>
+                <Account />
+              </ProtectedRoute>
+            } />
+            <Route path="/details/:id" element={
+              <ProtectedRoute>
+                <ContentDetails />
+              </ProtectedRoute>
+            } />
+            <Route path="/watch/:id" element={
+              <ProtectedRoute requireSubscription>
+                <WatchContent />
+              </ProtectedRoute>
+            } />
             
             {/* Admin Routes */}
             <Route 

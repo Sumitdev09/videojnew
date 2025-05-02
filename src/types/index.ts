@@ -25,6 +25,24 @@ export interface Content {
   cast?: string[];
   featured?: boolean;
   trending?: boolean;
+  seasons?: ContentSeason[];
+}
+
+export interface ContentSeason {
+  id: string;
+  seasonNumber: number;
+  title: string;
+  episodes: ContentEpisode[];
+}
+
+export interface ContentEpisode {
+  id: string;
+  episodeNumber: number;
+  title: string;
+  description: string;
+  duration: string;
+  thumbnailUrl?: string;
+  videoUrl?: string;
 }
 
 export interface Subscription {
