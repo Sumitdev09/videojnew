@@ -24,6 +24,13 @@ import Movies from "@/pages/Movies";
 import Series from "@/pages/Series";
 import MyList from "@/pages/MyList";
 
+// New Admin Pages
+import AddContent from "@/pages/admin/AddContent";
+import EditContent from "@/pages/admin/EditContent";
+import ManageFeatured from "@/pages/admin/ManageFeatured";
+import AddUser from "@/pages/admin/AddUser";
+import Reports from "@/pages/admin/Reports";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -107,6 +114,47 @@ const App = () => (
               element={
                 <ProtectedRoute requireAdmin>
                   <ManageContent />
+                </ProtectedRoute>
+              } 
+            />
+            {/* New Admin Routes */}
+            <Route 
+              path="/admin/content/new" 
+              element={
+                <ProtectedRoute requireAdmin>
+                  <AddContent />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/admin/content/edit/:id" 
+              element={
+                <ProtectedRoute requireAdmin>
+                  <EditContent />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/admin/featured" 
+              element={
+                <ProtectedRoute requireAdmin>
+                  <ManageFeatured />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/admin/users/new" 
+              element={
+                <ProtectedRoute requireAdmin>
+                  <AddUser />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/admin/reports" 
+              element={
+                <ProtectedRoute requireAdmin>
+                  <Reports />
                 </ProtectedRoute>
               } 
             />
