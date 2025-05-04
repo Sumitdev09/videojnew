@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import Layout from "@/components/layout/Layout";
 import ContentForm from "@/components/admin/ContentForm";
 import { Content } from "@/types";
-import { getContent, saveContent } from "@/lib/data";
 import { useToast } from "@/components/ui/use-toast";
 
 const AddContent = () => {
@@ -11,25 +10,19 @@ const AddContent = () => {
   const { toast } = useToast();
 
   const handleCreateContent = (contentData: Content) => {
-    // Always get the latest content list first
-    const currentContent = getContent();
+    // In a real app, this would save to a backend
+    // Here we'll just simulate success and navigate back
     
     // Generate a unique ID for the new content
     const newContent = {
       ...contentData,
       id: String(Date.now()),
     };
-    
-    // Add the new content to the existing content
-    const updatedContent = [...currentContent, newContent];
-    
-    // Save to localStorage
-    saveContent(updatedContent);
-    console.log("New content created:", newContent.title);
 
+    // For demo purposes, we'll just show a toast and navigate back
     toast({
       title: "Content created",
-      description: `${newContent.title} has been created successfully.`,
+      description: `${contentData.title} has been created successfully.`,
     });
 
     // Navigate back to content list

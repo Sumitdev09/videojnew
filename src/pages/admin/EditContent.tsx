@@ -4,7 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import Layout from "@/components/layout/Layout";
 import ContentForm from "@/components/admin/ContentForm";
 import { Content } from "@/types";
-import { getContent, saveContent } from "@/lib/data";
+import { contents, saveContent } from "@/lib/data";
 import { useToast } from "@/components/ui/use-toast";
 
 const EditContent = () => {
@@ -16,15 +16,12 @@ const EditContent = () => {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    // Always get fresh content from localStorage
-    const allContent = getContent();
-    const content = allContent.find((c) => c.id === id);
+    // In a real app, this would be an API call
+    const content = contents.find((c) => c.id === id);
     
     if (content) {
-      console.log("Loaded content for editing:", content.title);
       setContentData(content);
     } else {
-      console.error("Content not found for editing, id:", id);
       setError("Content not found");
     }
     
@@ -32,15 +29,12 @@ const EditContent = () => {
   }, [id]);
 
   const handleUpdateContent = (updatedData: Content) => {
-    // Get the latest content from localStorage
-    const allContent = getContent();
+    // In a real app, this would update the backend
+    // Here, we update the content in localStorage
     
-    // Update the specific content item
-    const updatedContents = allContent.map((c) => 
+    const updatedContents = contents.map((c) => 
       c.id === updatedData.id ? updatedData : c
     );
-    
-    console.log("Updating content:", updatedData.title);
     
     // Save the updated content to localStorage
     saveContent(updatedContents);

@@ -9,6 +9,8 @@ import {
   getFeaturedContent,
   getTrendingContent,
   getContentByGenre,
+  getMovies,
+  getSeries,
 } from "@/lib/data";
 import { useToast } from "@/components/ui/use-toast";
 
@@ -23,8 +25,6 @@ const Home = () => {
   const { toast } = useToast();
 
   const loadContent = () => {
-    console.log("Loading content on Home page");
-    
     // Fetch featured content
     const featured = getFeaturedContent();
     setFeaturedContent(featured.length > 0 ? featured[Math.floor(Math.random() * featured.length)] : null);
@@ -43,42 +43,26 @@ const Home = () => {
     loadContent();
 
     // Load my list from localStorage
-    if (user?.id) {
-      const savedList = localStorage.getItem(`my-list-${user.id}`);
-      if (savedList) {
-        setMyList(JSON.parse(savedList));
-      }
+    const savedList = localStorage.getItem(`my-list-${user?.id}`);
+    if (savedList) {
+      setMyList(JSON.parse(savedList));
     }
-    
-    // Listen for content updates
-    const handleContentUpdated = () => {
-      console.log("Content updated event detected, refreshing Home page content");
-      loadContent();
-    };
     
     // Listen for storage events (for multi-tab sync)
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === 'netflix-content') {
-        console.log("Storage change detected, refreshing content");
         loadContent();
       }
     };
     
-    window.addEventListener('contentUpdated', handleContentUpdated);
     window.addEventListener('storage', handleStorageChange);
-    
-    return () => {
-      window.removeEventListener('contentUpdated', handleContentUpdated);
-      window.removeEventListener('storage', handleStorageChange);
-    };
+    return () => window.removeEventListener('storage', handleStorageChange);
   }, [user?.id]);
 
   const handleAddToList = (content: Content) => {
     const newList = [...myList, content];
     setMyList(newList);
-    if (user?.id) {
-      localStorage.setItem(`my-list-${user.id}`, JSON.stringify(newList));
-    }
+    localStorage.setItem(`my-list-${user?.id}`, JSON.stringify(newList));
     
     toast({
       title: "Added to My List",
@@ -89,9 +73,7 @@ const Home = () => {
   const handleRemoveFromList = (contentId: string) => {
     const newList = myList.filter((item) => item.id !== contentId);
     setMyList(newList);
-    if (user?.id) {
-      localStorage.setItem(`my-list-${user.id}`, JSON.stringify(newList));
-    }
+    localStorage.setItem(`my-list-${user?.id}`, JSON.stringify(newList));
     
     toast({
       title: "Removed from My List",

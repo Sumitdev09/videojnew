@@ -1,8 +1,9 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Layout from "@/components/layout/Layout";
 import { Content } from "@/types";
-import { getContent, saveContent } from "@/lib/data";
+import { contents, saveContent } from "@/lib/data";
 import { useToast } from "@/components/ui/use-toast";
 import {
   Table,
@@ -39,38 +40,9 @@ const ManageContent = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  // Load content on component mount and when storage changes
-  const loadContent = () => {
-    console.log("Loading content in ManageContent");
-    // Always get fresh content from localStorage
-    const freshContent = getContent();
-    setContentList(freshContent);
-  };
-
+  // Load content on component mount
   useEffect(() => {
-    loadContent();
-    
-    // Listen for content updates
-    const handleContentUpdated = () => {
-      console.log("Content updated event detected, refreshing content list");
-      loadContent();
-    };
-    
-    // Listen for storage events
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'netflix-content') {
-        console.log("Storage change detected, refreshing content list");
-        loadContent();
-      }
-    };
-    
-    window.addEventListener('contentUpdated', handleContentUpdated);
-    window.addEventListener('storage', handleStorageChange);
-    
-    return () => {
-      window.removeEventListener('contentUpdated', handleContentUpdated);
-      window.removeEventListener('storage', handleStorageChange);
-    };
+    setContentList(contents);
   }, []);
 
   const filteredContent = contentList.filter(
@@ -92,19 +64,13 @@ const ManageContent = () => {
   const confirmDeleteContent = () => {
     if (!contentToDelete) return;
 
-    // Get fresh content list before updating
-    const currentContent = getContent();
-    const updatedContent = currentContent.filter((c) => c.id !== contentToDelete);
-    
-    // Update state
+    const updatedContent = contentList.filter((c) => c.id !== contentToDelete);
     setContentList(updatedContent);
     
     // Save the updated content to localStorage
     saveContent(updatedContent);
-    console.log(`Deleted content with id ${contentToDelete}`);
     
     setIsDeleteDialogOpen(false);
-    setContentToDelete(null);
     
     toast({
       title: "Content deleted",
