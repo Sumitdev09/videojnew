@@ -1,9 +1,9 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Layout from "@/components/layout/Layout";
 import { Content } from "@/types";
-import { contents } from "@/lib/data";
+import { contents, saveContent } from "@/lib/data";
 import { useToast } from "@/components/ui/use-toast";
 import {
   Table,
@@ -33,12 +33,17 @@ import {
 import { Edit, Search, Trash, Eye, Film, Tv } from "lucide-react";
 
 const ManageContent = () => {
-  const [contentList, setContentList] = useState<Content[]>(contents);
+  const [contentList, setContentList] = useState<Content[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [contentToDelete, setContentToDelete] = useState<string | null>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  // Load content on component mount
+  useEffect(() => {
+    setContentList(contents);
+  }, []);
 
   const filteredContent = contentList.filter(
     (content) =>
@@ -59,9 +64,12 @@ const ManageContent = () => {
   const confirmDeleteContent = () => {
     if (!contentToDelete) return;
 
-    setContentList((prevContent) => 
-      prevContent.filter((c) => c.id !== contentToDelete)
-    );
+    const updatedContent = contentList.filter((c) => c.id !== contentToDelete);
+    setContentList(updatedContent);
+    
+    // Save the updated content to localStorage
+    saveContent(updatedContent);
+    
     setIsDeleteDialogOpen(false);
     
     toast({

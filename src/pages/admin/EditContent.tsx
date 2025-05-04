@@ -4,7 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import Layout from "@/components/layout/Layout";
 import ContentForm from "@/components/admin/ContentForm";
 import { Content } from "@/types";
-import { contents } from "@/lib/data";
+import { contents, saveContent } from "@/lib/data";
 import { useToast } from "@/components/ui/use-toast";
 
 const EditContent = () => {
@@ -30,7 +30,14 @@ const EditContent = () => {
 
   const handleUpdateContent = (updatedData: Content) => {
     // In a real app, this would update the backend
-    // Here we'll just simulate success and navigate back
+    // Here, we update the content in localStorage
+    
+    const updatedContents = contents.map((c) => 
+      c.id === updatedData.id ? updatedData : c
+    );
+    
+    // Save the updated content to localStorage
+    saveContent(updatedContents);
     
     toast({
       title: "Content updated",

@@ -24,7 +24,7 @@ const Home = () => {
   const [myList, setMyList] = useState<Content[]>([]);
   const { toast } = useToast();
 
-  useEffect(() => {
+  const loadContent = () => {
     // Fetch featured content
     const featured = getFeaturedContent();
     setFeaturedContent(featured.length > 0 ? featured[Math.floor(Math.random() * featured.length)] : null);
@@ -36,12 +36,27 @@ const Home = () => {
     setActionContent(getContentByGenre("Action"));
     setDramaContent(getContentByGenre("Drama"));
     setSciFiContent(getContentByGenre("Sci-Fi"));
+  };
+
+  useEffect(() => {
+    // Load content when component mounts
+    loadContent();
 
     // Load my list from localStorage
     const savedList = localStorage.getItem(`my-list-${user?.id}`);
     if (savedList) {
       setMyList(JSON.parse(savedList));
     }
+    
+    // Listen for storage events (for multi-tab sync)
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'netflix-content') {
+        loadContent();
+      }
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
   }, [user?.id]);
 
   const handleAddToList = (content: Content) => {

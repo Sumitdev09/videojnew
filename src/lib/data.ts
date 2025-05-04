@@ -1,8 +1,7 @@
-
 import { Content, Subscription } from "@/types";
 
-// Mock content data with real video URLs
-export const contents: Content[] = [
+// Initial mock content data with real video URLs
+const initialContents: Content[] = [
   {
     id: "1",
     title: "Stranger Things",
@@ -126,6 +125,65 @@ export const contents: Content[] = [
   }
 ];
 
+// Get content from localStorage or use initial content
+export const getContent = (): Content[] => {
+  const savedContent = localStorage.getItem('netflix-content');
+  if (savedContent) {
+    try {
+      return JSON.parse(savedContent);
+    } catch (e) {
+      console.error('Error parsing content from localStorage', e);
+      return initialContents;
+    }
+  }
+  return initialContents;
+};
+
+// Save content to localStorage
+export const saveContent = (content: Content[]): void => {
+  localStorage.setItem('netflix-content', JSON.stringify(content));
+};
+
+// Use the loaded content
+export const contents: Content[] = getContent();
+
+// Functions to manipulate data
+export const getContentById = (id: string): Content | undefined => {
+  // Always get the latest content from localStorage
+  const currentContent = getContent();
+  return currentContent.find(content => content.id === id);
+};
+
+export const getContentByGenre = (genre: string): Content[] => {
+  // Always get the latest content from localStorage
+  const currentContent = getContent();
+  return currentContent.filter(content => content.genre.includes(genre));
+};
+
+export const getFeaturedContent = (): Content[] => {
+  // Always get the latest content from localStorage
+  const currentContent = getContent();
+  return currentContent.filter(content => content.featured);
+};
+
+export const getTrendingContent = (): Content[] => {
+  // Always get the latest content from localStorage
+  const currentContent = getContent();
+  return currentContent.filter(content => content.trending);
+};
+
+export const getMovies = (): Content[] => {
+  // Always get the latest content from localStorage
+  const currentContent = getContent();
+  return currentContent.filter(content => content.type === "movie");
+};
+
+export const getSeries = (): Content[] => {
+  // Always get the latest content from localStorage
+  const currentContent = getContent();
+  return currentContent.filter(content => content.type === "series");
+};
+
 // Subscription plans
 export const subscriptionPlans: Subscription[] = [
   {
@@ -165,31 +223,6 @@ export const subscriptionPlans: Subscription[] = [
     ]
   }
 ];
-
-// Functions to manipulate data
-export const getContentById = (id: string): Content | undefined => {
-  return contents.find(content => content.id === id);
-};
-
-export const getContentByGenre = (genre: string): Content[] => {
-  return contents.filter(content => content.genre.includes(genre));
-};
-
-export const getFeaturedContent = (): Content[] => {
-  return contents.filter(content => content.featured);
-};
-
-export const getTrendingContent = (): Content[] => {
-  return contents.filter(content => content.trending);
-};
-
-export const getMovies = (): Content[] => {
-  return contents.filter(content => content.type === "movie");
-};
-
-export const getSeries = (): Content[] => {
-  return contents.filter(content => content.type === "series");
-};
 
 export const getSubscriptionById = (id: string): Subscription | undefined => {
   return subscriptionPlans.find(plan => plan.id === id);

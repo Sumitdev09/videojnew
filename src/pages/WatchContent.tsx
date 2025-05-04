@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Content } from "@/types";
-import { contents } from "@/lib/data";
+import { getContentById } from "@/lib/data";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { ArrowLeft, Play, Pause, Volume2, VolumeX, Maximize } from "lucide-react";
@@ -21,18 +21,20 @@ const WatchContent = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   
   useEffect(() => {
-    // In a real app, this would fetch from an API
-    const foundContent = contents.find(item => item.id === id);
-    
-    if (foundContent) {
-      setContent(foundContent);
+    // Always fetch the most up-to-date content from localStorage
+    if (id) {
+      const foundContent = getContentById(id);
       
-      // Auto-hide controls after 3 seconds
-      const timer = setTimeout(() => {
-        setShowControls(false);
-      }, 3000);
-      
-      return () => clearTimeout(timer);
+      if (foundContent) {
+        setContent(foundContent);
+        
+        // Auto-hide controls after 3 seconds
+        const timer = setTimeout(() => {
+          setShowControls(false);
+        }, 3000);
+        
+        return () => clearTimeout(timer);
+      }
     }
   }, [id]);
   
