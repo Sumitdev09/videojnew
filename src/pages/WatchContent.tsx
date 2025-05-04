@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Content } from "@/types";
 import { contents } from "@/lib/data";
@@ -15,7 +15,10 @@ const WatchContent = () => {
   const [isPlaying, setIsPlaying] = useState(true);
   const [isMuted, setIsMuted] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [currentTime, setCurrentTime] = useState(0);
   const [showControls, setShowControls] = useState(true);
+  const videoRef = useRef<HTMLVideoElement>(null);
   
   useEffect(() => {
     // In a real app, this would fetch from an API
@@ -34,29 +37,62 @@ const WatchContent = () => {
   }, [id]);
   
   useEffect(() => {
-    if (isPlaying && content) {
-      // Simulate video progress
-      const interval = setInterval(() => {
-        setProgress(prev => {
-          if (prev >= 100) {
-            setIsPlaying(false);
-            clearInterval(interval);
-            return 100;
-          }
-          return prev + 0.5;
-        });
-      }, 1000);
-      
-      return () => clearInterval(interval);
-    }
-  }, [isPlaying, content]);
+    const videoElement = videoRef.current;
+    if (!videoElement) return;
+
+    const handleTimeUpdate = () => {
+      const current = videoElement.currentTime;
+      const videoDuration = videoElement.duration;
+      setCurrentTime(current);
+      setProgress((current / videoDuration) * 100);
+    };
+
+    const handleDurationChange = () => {
+      setDuration(videoElement.duration);
+    };
+
+    const handleVideoEnd = () => {
+      setIsPlaying(false);
+      setProgress(100);
+    };
+
+    videoElement.addEventListener('timeupdate', handleTimeUpdate);
+    videoElement.addEventListener('durationchange', handleDurationChange);
+    videoElement.addEventListener('ended', handleVideoEnd);
+
+    return () => {
+      videoElement.removeEventListener('timeupdate', handleTimeUpdate);
+      videoElement.removeEventListener('durationchange', handleDurationChange);
+      videoElement.removeEventListener('ended', handleVideoEnd);
+    };
+  }, [videoRef]);
   
   const handlePlayPause = () => {
-    setIsPlaying(!isPlaying);
+    if (videoRef.current) {
+      if (isPlaying) {
+        videoRef.current.pause();
+      } else {
+        videoRef.current.play();
+      }
+      setIsPlaying(!isPlaying);
+    }
   };
   
   const handleMuteToggle = () => {
-    setIsMuted(!isMuted);
+    if (videoRef.current) {
+      videoRef.current.muted = !isMuted;
+      setIsMuted(!isMuted);
+    }
+  };
+  
+  const handleProgressChange = (values: number[]) => {
+    const newProgress = values[0];
+    if (videoRef.current && duration) {
+      const newTime = (newProgress / 100) * duration;
+      videoRef.current.currentTime = newTime;
+      setProgress(newProgress);
+      setCurrentTime(newTime);
+    }
   };
   
   const handleMouseMove = () => {
@@ -68,6 +104,12 @@ const WatchContent = () => {
     }, 3000);
     
     return () => clearTimeout(timer);
+  };
+
+  const formatTime = (time: number) => {
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
   };
   
   if (!content) {
@@ -83,17 +125,21 @@ const WatchContent = () => {
       className="relative w-full h-screen bg-black overflow-hidden"
       onMouseMove={handleMouseMove}
     >
-      {/* Video placeholder (in a real app, this would be a video player) */}
-      <div 
-        className="absolute inset-0 bg-cover bg-center"
-        style={{ backgroundImage: `url(${content.bannerUrl || content.thumbnailUrl})` }}
-      >
-        <div className="absolute inset-0 bg-black/30" />
-      </div>
+      {/* Video player */}
+      <video
+        ref={videoRef}
+        className="absolute inset-0 w-full h-full object-contain z-0"
+        src={content.videoUrl}
+        poster={content.bannerUrl || content.thumbnailUrl}
+        autoPlay={isPlaying}
+        muted={isMuted}
+        playsInline
+        onClick={handlePlayPause}
+      />
       
       {/* Controls overlay */}
       <div 
-        className={`absolute inset-0 flex flex-col justify-between p-4 md:p-8 transition-opacity duration-300 ${
+        className={`absolute inset-0 flex flex-col justify-between p-4 md:p-8 transition-opacity duration-300 z-10 ${
           showControls ? "opacity-100" : "opacity-0"
         }`}
       >
@@ -129,19 +175,19 @@ const WatchContent = () => {
           {/* Progress bar */}
           <div className="flex items-center gap-4">
             <span className="text-white text-sm">
-              {Math.floor(progress / 100 * 90)}:00
+              {formatTime(currentTime)}
             </span>
             <div className="flex-1">
               <Slider
                 value={[progress]} 
                 max={100} 
                 step={0.1}
-                onValueChange={(values) => setProgress(values[0])}
+                onValueChange={handleProgressChange}
                 className="cursor-pointer"
               />
             </div>
             <span className="text-white text-sm">
-              90:00
+              {formatTime(duration)}
             </span>
           </div>
           
@@ -179,6 +225,13 @@ const WatchContent = () => {
               variant="ghost"
               size="icon"
               className="text-white hover:bg-black/20"
+              onClick={() => {
+                if (videoRef.current) {
+                  if (videoRef.current.requestFullscreen) {
+                    videoRef.current.requestFullscreen();
+                  }
+                }
+              }}
             >
               <Maximize className="h-5 w-5" />
             </Button>
