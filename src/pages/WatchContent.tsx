@@ -18,24 +18,50 @@ const WatchContent = () => {
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
   const [showControls, setShowControls] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const controlsTimerRef = useRef<number | null>(null);
   
   useEffect(() => {
-    // Always fetch the most up-to-date content from localStorage
+    // Clear any existing timers when component mounts or unmounts
+    return () => {
+      if (controlsTimerRef.current) {
+        clearTimeout(controlsTimerRef.current);
+      }
+    };
+  }, []);
+  
+  useEffect(() => {
     if (id) {
+      // Always fetch fresh content data
       const foundContent = getContentById(id);
       
       if (foundContent) {
+        console.log("Content loaded:", foundContent.title);
         setContent(foundContent);
+        setError(null);
         
         // Auto-hide controls after 3 seconds
-        const timer = setTimeout(() => {
-          setShowControls(false);
-        }, 3000);
+        if (controlsTimerRef.current) {
+          clearTimeout(controlsTimerRef.current);
+        }
         
-        return () => clearTimeout(timer);
+        controlsTimerRef.current = window.setTimeout(() => {
+          setShowControls(false);
+        }, 3000) as unknown as number;
+      } else {
+        console.error("Content not found for id:", id);
+        setError("Content not found");
+        setContent(null);
       }
     }
+    
+    // Cleanup function
+    return () => {
+      if (controlsTimerRef.current) {
+        clearTimeout(controlsTimerRef.current);
+      }
+    };
   }, [id]);
   
   useEffect(() => {
@@ -67,7 +93,7 @@ const WatchContent = () => {
       videoElement.removeEventListener('durationchange', handleDurationChange);
       videoElement.removeEventListener('ended', handleVideoEnd);
     };
-  }, [videoRef]);
+  }, [videoRef.current]);
   
   const handlePlayPause = () => {
     if (videoRef.current) {
@@ -100,12 +126,15 @@ const WatchContent = () => {
   const handleMouseMove = () => {
     setShowControls(true);
     
-    // Auto-hide controls after 3 seconds of inactivity
-    const timer = setTimeout(() => {
-      setShowControls(false);
-    }, 3000);
+    // Clear any existing timer
+    if (controlsTimerRef.current) {
+      clearTimeout(controlsTimerRef.current);
+    }
     
-    return () => clearTimeout(timer);
+    // Set a new timer to hide controls after 3 seconds of inactivity
+    controlsTimerRef.current = window.setTimeout(() => {
+      setShowControls(false);
+    }, 3000) as unknown as number;
   };
 
   const formatTime = (time: number) => {
@@ -114,10 +143,29 @@ const WatchContent = () => {
     return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
   };
   
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-black">
+        <div className="text-center">
+          <h2 className="text-2xl text-white mb-4">{error}</h2>
+          <Button 
+            onClick={() => navigate(-1)}
+            className="bg-netflix-red hover:bg-netflix-red/90 text-white"
+          >
+            Go Back
+          </Button>
+        </div>
+      </div>
+    );
+  }
+  
   if (!content) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-black">
-        <h2 className="text-2xl text-white">Content not found</h2>
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-netflix-red mx-auto"></div>
+          <p className="mt-4 text-white">Loading content...</p>
+        </div>
       </div>
     );
   }

@@ -125,33 +125,48 @@ const initialContents: Content[] = [
   }
 ];
 
-// Get content from localStorage or use initial content
+// IMPORTANT: This function will always get fresh content from localStorage
 export const getContent = (): Content[] => {
+  console.log("Getting content from localStorage");
   const savedContent = localStorage.getItem('netflix-content');
   if (savedContent) {
     try {
-      return JSON.parse(savedContent);
+      const parsedContent = JSON.parse(savedContent);
+      console.log(`Retrieved ${parsedContent.length} items from localStorage`);
+      return parsedContent;
     } catch (e) {
       console.error('Error parsing content from localStorage', e);
+      // Initialize localStorage with initial content if parsing fails
+      localStorage.setItem('netflix-content', JSON.stringify(initialContents));
       return initialContents;
     }
+  } else {
+    // Initialize localStorage with initial content if not found
+    console.log("No content found in localStorage, initializing with default content");
+    localStorage.setItem('netflix-content', JSON.stringify(initialContents));
+    return initialContents;
   }
-  return initialContents;
 };
 
 // Save content to localStorage
 export const saveContent = (content: Content[]): void => {
+  console.log(`Saving ${content.length} content items to localStorage`);
   localStorage.setItem('netflix-content', JSON.stringify(content));
+  
+  // Dispatch a storage event to notify other tabs/components
+  window.dispatchEvent(new Event('contentUpdated'));
 };
 
-// Use the loaded content
-export const contents: Content[] = getContent();
+// NOTE: Don't keep an in-memory cache that might get stale
+// Instead, always fetch fresh content from localStorage
 
-// Functions to manipulate data
+// Functions to manipulate data - always fetch fresh data
 export const getContentById = (id: string): Content | undefined => {
-  // Always get the latest content from localStorage
+  console.log(`Getting content by id: ${id}`);
   const currentContent = getContent();
-  return currentContent.find(content => content.id === id);
+  const content = currentContent.find(content => content.id === id);
+  console.log(content ? `Found content: ${content.title}` : `Content not found for id: ${id}`);
+  return content;
 };
 
 export const getContentByGenre = (genre: string): Content[] => {
