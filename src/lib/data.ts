@@ -1,3 +1,4 @@
+
 import { Content, Subscription } from "@/types";
 
 // Initial mock content data with real video URLs
@@ -144,8 +145,8 @@ export const saveContent = (content: Content[]): void => {
   localStorage.setItem('netflix-content', JSON.stringify(content));
 };
 
-// Use the loaded content
-export const contents: Content[] = getContent();
+// Export contents to maintain compatibility with existing code
+export const contents = getContent();
 
 // Functions to manipulate data
 export const getContentById = (id: string): Content | undefined => {

@@ -45,7 +45,12 @@ const Home = () => {
     // Load my list from localStorage
     const savedList = localStorage.getItem(`my-list-${user?.id}`);
     if (savedList) {
-      setMyList(JSON.parse(savedList));
+      try {
+        setMyList(JSON.parse(savedList));
+      } catch (e) {
+        console.error('Error parsing my list from localStorage', e);
+        setMyList([]);
+      }
     }
     
     // Listen for storage events (for multi-tab sync)
@@ -55,8 +60,18 @@ const Home = () => {
       }
     };
     
+    // Listen for custom content-updated event
+    const handleContentUpdated = () => {
+      loadContent();
+    };
+    
     window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
+    window.addEventListener('content-updated', handleContentUpdated);
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('content-updated', handleContentUpdated);
+    };
   }, [user?.id]);
 
   const handleAddToList = (content: Content) => {

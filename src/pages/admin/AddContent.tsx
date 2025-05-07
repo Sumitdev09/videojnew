@@ -4,22 +4,30 @@ import Layout from "@/components/layout/Layout";
 import ContentForm from "@/components/admin/ContentForm";
 import { Content } from "@/types";
 import { useToast } from "@/components/ui/use-toast";
+import { saveContent, getContent } from "@/lib/data";
 
 const AddContent = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
   const handleCreateContent = (contentData: Content) => {
-    // In a real app, this would save to a backend
-    // Here we'll just simulate success and navigate back
-    
     // Generate a unique ID for the new content
     const newContent = {
       ...contentData,
       id: String(Date.now()),
     };
 
-    // For demo purposes, we'll just show a toast and navigate back
+    // Get current content and add the new one
+    const currentContents = getContent();
+    const updatedContents = [...currentContents, newContent];
+    
+    // Save to localStorage
+    saveContent(updatedContents);
+    
+    // Dispatch an event to notify other components about the update
+    window.dispatchEvent(new Event('content-updated'));
+
+    // Show success toast
     toast({
       title: "Content created",
       description: `${contentData.title} has been created successfully.`,

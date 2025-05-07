@@ -199,9 +199,9 @@ const ManageUsers = () => {
             <div className="space-y-2">
               <Label htmlFor="subscription-tier">Subscription Tier</Label>
               <Select
-                value={subscriptionTier || ""}
+                value={subscriptionTier || "none"}
                 onValueChange={(value) => {
-                  if (value === "") {
+                  if (value === "none") {
                     setSubscriptionTier(null);
                   } else {
                     setSubscriptionTier(value as "basic" | "standard" | "premium");
@@ -212,7 +212,7 @@ const ManageUsers = () => {
                   <SelectValue placeholder="Select subscription tier" />
                 </SelectTrigger>
                 <SelectContent className="bg-netflix-darkGray border-netflix-mediumGray">
-                  <SelectItem value="">None</SelectItem>
+                  <SelectItem value="none">None</SelectItem>
                   <SelectItem value="basic">Basic</SelectItem>
                   <SelectItem value="standard">Standard</SelectItem>
                   <SelectItem value="premium">Premium</SelectItem>
@@ -223,9 +223,9 @@ const ManageUsers = () => {
             <div className="space-y-2">
               <Label htmlFor="subscription-status">Subscription Status</Label>
               <Select
-                value={subscriptionStatus || ""}
+                value={subscriptionStatus || "none"}
                 onValueChange={(value) => {
-                  if (value === "") {
+                  if (value === "none") {
                     setSubscriptionStatus(null);
                   } else {
                     setSubscriptionStatus(value as "active" | "inactive" | "pending");
@@ -236,7 +236,7 @@ const ManageUsers = () => {
                   <SelectValue placeholder="Select subscription status" />
                 </SelectTrigger>
                 <SelectContent className="bg-netflix-darkGray border-netflix-mediumGray">
-                  <SelectItem value="">None</SelectItem>
+                  <SelectItem value="none">None</SelectItem>
                   <SelectItem value="active">Active</SelectItem>
                   <SelectItem value="inactive">Inactive</SelectItem>
                   <SelectItem value="pending">Pending</SelectItem>
