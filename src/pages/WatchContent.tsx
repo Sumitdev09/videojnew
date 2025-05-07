@@ -67,7 +67,7 @@ const WatchContent = () => {
       videoElement.removeEventListener('durationchange', handleDurationChange);
       videoElement.removeEventListener('ended', handleVideoEnd);
     };
-  }, [videoRef]);
+  }, []);
   
   const handlePlayPause = () => {
     if (videoRef.current) {
@@ -108,9 +108,11 @@ const WatchContent = () => {
     return () => clearTimeout(timer);
   };
 
-  const formatTime = (time: number) => {
-    const minutes = Math.floor(time / 60);
-    const seconds = Math.floor(time % 60);
+  const formatTime = (timeInSeconds: number) => {
+    if (isNaN(timeInSeconds)) return "0:00";
+    
+    const minutes = Math.floor(timeInSeconds / 60);
+    const seconds = Math.floor(timeInSeconds % 60);
     return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
   };
   
