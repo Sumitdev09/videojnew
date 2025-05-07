@@ -7,7 +7,7 @@ const Footer = () => {
       <div className="container mx-auto px-4">
         <div className="mb-8">
           <Link to="/" className="text-netflix-red font-bold text-2xl">
-            BingeBuddy
+            VideoJ
           </Link>
         </div>
         
@@ -118,7 +118,7 @@ const Footer = () => {
         </div>
         
         <div className="mt-12 pt-8 border-t border-netflix-mediumGray text-center text-sm">
-          <p>&copy; {new Date().getFullYear()} BingeBuddy. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} VideoJ. All rights reserved.</p>
           <p className="mt-2">This is a demo project and not a real streaming service.</p>
         </div>
       </div>

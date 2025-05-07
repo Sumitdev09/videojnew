@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/context/auth-context";
@@ -57,7 +56,7 @@ const Navbar = () => {
       <div className="container mx-auto flex items-center justify-between py-4 px-4 md:px-6">
         <div className="flex items-center">
           <Link to="/" className="flex items-center">
-            <h1 className="text-netflix-red font-bold text-2xl md:text-3xl">BingeBuddy</h1>
+            <h1 className="text-netflix-red font-bold text-2xl md:text-3xl">VideoJ</h1>
           </Link>
 
           {/* Desktop Navigation */}

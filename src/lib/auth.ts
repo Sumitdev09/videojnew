@@ -8,7 +8,7 @@ let currentUser: User | null = null;
 const users: User[] = [
   {
     id: "1",
-    email: "admin@bingebuddy.com",
+    email: "admin@videoj.com",
     name: "Admin User",
     role: "admin",
     subscriptionTier: "premium",

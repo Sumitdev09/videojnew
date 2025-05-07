@@ -20,7 +20,7 @@ const Index = () => {
       <div className="container mx-auto px-4 h-screen flex flex-col justify-center items-center">
         <div className="text-center max-w-3xl">
           <h1 className="text-5xl md:text-7xl font-bold text-netflix-red mb-6">
-            BingeBuddy
+            VideoJ
           </h1>
           <p className="text-2xl md:text-3xl text-white mb-8">
             Unlimited movies, TV shows, and more.
