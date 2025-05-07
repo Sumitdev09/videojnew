@@ -17,6 +17,8 @@ import { useToast } from "@/components/ui/use-toast";
 const Home = () => {
   const { user, hasSubscription } = useAuth();
   const [featuredContent, setFeaturedContent] = useState<Content | null>(null);
+  const [featuredContentList, setFeaturedContentList] = useState<Content[]>([]);
+  const [currentFeaturedIndex, setCurrentFeaturedIndex] = useState(0);
   const [trendingContent, setTrendingContent] = useState<Content[]>([]);
   const [actionContent, setActionContent] = useState<Content[]>([]);
   const [dramaContent, setDramaContent] = useState<Content[]>([]);
@@ -27,7 +29,8 @@ const Home = () => {
   const loadContent = () => {
     // Fetch featured content
     const featured = getFeaturedContent();
-    setFeaturedContent(featured.length > 0 ? featured[Math.floor(Math.random() * featured.length)] : null);
+    setFeaturedContentList(featured);
+    setFeaturedContent(featured.length > 0 ? featured[currentFeaturedIndex] : null);
 
     // Fetch trending content
     setTrendingContent(getTrendingContent());
@@ -74,6 +77,25 @@ const Home = () => {
     };
   }, [user?.id]);
 
+  // Set the featured content whenever the current index changes
+  useEffect(() => {
+    if (featuredContentList.length > 0) {
+      setFeaturedContent(featuredContentList[currentFeaturedIndex]);
+    }
+  }, [currentFeaturedIndex, featuredContentList]);
+
+  const handleNextFeatured = () => {
+    setCurrentFeaturedIndex((prevIndex) => 
+      prevIndex === featuredContentList.length - 1 ? 0 : prevIndex + 1
+    );
+  };
+
+  const handlePreviousFeatured = () => {
+    setCurrentFeaturedIndex((prevIndex) => 
+      prevIndex === 0 ? featuredContentList.length - 1 : prevIndex - 1
+    );
+  };
+
   const handleAddToList = (content: Content) => {
     const newList = [...myList, content];
     setMyList(newList);
@@ -109,6 +131,8 @@ const Home = () => {
             inMyList={isInMyList(featuredContent.id)}
             onAddToList={handleAddToList}
             onRemoveFromList={handleRemoveFromList}
+            onNext={featuredContentList.length > 1 ? handleNextFeatured : undefined}
+            onPrevious={featuredContentList.length > 1 ? handlePreviousFeatured : undefined}
           />
         )}
         

@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Content } from "@/types";
-import { Play, Info, Plus, Check, Volume2, VolumeX } from "lucide-react";
+import { Play, Info, Plus, Check, Volume2, VolumeX, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface FeaturedContentProps {
@@ -10,6 +10,8 @@ interface FeaturedContentProps {
   inMyList?: boolean;
   onAddToList?: (content: Content) => void;
   onRemoveFromList?: (contentId: string) => void;
+  onNext?: () => void;
+  onPrevious?: () => void;
 }
 
 const FeaturedContent = ({
@@ -17,6 +19,8 @@ const FeaturedContent = ({
   inMyList = false,
   onAddToList,
   onRemoveFromList,
+  onNext,
+  onPrevious,
 }: FeaturedContentProps) => {
   const [isMuted, setIsMuted] = useState(true);
   const navigate = useNavigate();
@@ -49,6 +53,29 @@ const FeaturedContent = ({
         <div className="absolute inset-0 bg-gradient-to-t from-netflix-black via-netflix-black/40 to-transparent" />
         <div className="absolute inset-0 bg-gradient-to-r from-netflix-black via-netflix-black/5 to-transparent" />
       </div>
+
+      {/* Navigation arrows */}
+      {onPrevious && (
+        <Button
+          onClick={onPrevious}
+          className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/60 rounded-full p-2 z-20"
+          size="icon"
+          variant="ghost"
+        >
+          <ChevronLeft className="text-white h-10 w-10" />
+        </Button>
+      )}
+      
+      {onNext && (
+        <Button
+          onClick={onNext}
+          className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/60 rounded-full p-2 z-20"
+          size="icon"
+          variant="ghost"
+        >
+          <ChevronRight className="text-white h-10 w-10" />
+        </Button>
+      )}
 
       {/* Content info */}
       <div className="relative z-10 h-full flex flex-col justify-center px-8 md:px-16 max-w-3xl">
