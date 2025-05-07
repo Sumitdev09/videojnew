@@ -19,6 +19,7 @@ const WatchContent = () => {
   const [currentTime, setCurrentTime] = useState(0);
   const [showControls, setShowControls] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const controlsTimerRef = useRef<number | null>(null);
   
   useEffect(() => {
     // Always fetch the most up-to-date content from localStorage
@@ -29,11 +30,19 @@ const WatchContent = () => {
         setContent(foundContent);
         
         // Auto-hide controls after 3 seconds
-        const timer = setTimeout(() => {
+        if (controlsTimerRef.current) {
+          window.clearTimeout(controlsTimerRef.current);
+        }
+        
+        controlsTimerRef.current = window.setTimeout(() => {
           setShowControls(false);
         }, 3000);
         
-        return () => clearTimeout(timer);
+        return () => {
+          if (controlsTimerRef.current) {
+            window.clearTimeout(controlsTimerRef.current);
+          }
+        };
       }
     }
   }, [id]);
@@ -44,13 +53,15 @@ const WatchContent = () => {
 
     const handleTimeUpdate = () => {
       const current = videoElement.currentTime;
-      const videoDuration = videoElement.duration;
+      const videoDuration = videoElement.duration || 0;
       setCurrentTime(current);
-      setProgress((current / videoDuration) * 100);
+      setProgress((current / videoDuration) * 100 || 0);
     };
 
     const handleDurationChange = () => {
-      setDuration(videoElement.duration);
+      const videoDuration = videoElement.duration;
+      console.log("Video duration set:", videoDuration);
+      setDuration(videoDuration);
     };
 
     const handleVideoEnd = () => {
@@ -58,16 +69,24 @@ const WatchContent = () => {
       setProgress(100);
     };
 
+    // Remove any existing listeners first
+    videoElement.removeEventListener('timeupdate', handleTimeUpdate);
+    videoElement.removeEventListener('durationchange', handleDurationChange);
+    videoElement.removeEventListener('ended', handleVideoEnd);
+
+    // Add listeners
     videoElement.addEventListener('timeupdate', handleTimeUpdate);
     videoElement.addEventListener('durationchange', handleDurationChange);
     videoElement.addEventListener('ended', handleVideoEnd);
 
     return () => {
-      videoElement.removeEventListener('timeupdate', handleTimeUpdate);
-      videoElement.removeEventListener('durationchange', handleDurationChange);
-      videoElement.removeEventListener('ended', handleVideoEnd);
+      if (videoElement) {
+        videoElement.removeEventListener('timeupdate', handleTimeUpdate);
+        videoElement.removeEventListener('durationchange', handleDurationChange);
+        videoElement.removeEventListener('ended', handleVideoEnd);
+      }
     };
-  }, []);
+  }, [videoRef.current]);
   
   const handlePlayPause = () => {
     if (videoRef.current) {
@@ -101,15 +120,17 @@ const WatchContent = () => {
     setShowControls(true);
     
     // Auto-hide controls after 3 seconds of inactivity
-    const timer = setTimeout(() => {
+    if (controlsTimerRef.current) {
+      window.clearTimeout(controlsTimerRef.current);
+    }
+    
+    controlsTimerRef.current = window.setTimeout(() => {
       setShowControls(false);
     }, 3000);
-    
-    return () => clearTimeout(timer);
   };
 
   const formatTime = (timeInSeconds: number) => {
-    if (isNaN(timeInSeconds)) return "0:00";
+    if (isNaN(timeInSeconds) || timeInSeconds === Infinity) return "0:00";
     
     const minutes = Math.floor(timeInSeconds / 60);
     const seconds = Math.floor(timeInSeconds % 60);
@@ -135,7 +156,7 @@ const WatchContent = () => {
         className="absolute inset-0 w-full h-full object-contain z-0"
         src={content.videoUrl}
         poster={content.bannerUrl || content.thumbnailUrl}
-        autoPlay={isPlaying}
+        autoPlay
         muted={isMuted}
         playsInline
         onClick={handlePlayPause}
