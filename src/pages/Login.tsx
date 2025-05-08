@@ -21,6 +21,10 @@ const Login = () => {
 
     try {
       await login(email, password);
+      toast({
+        title: "Login successful",
+        description: "Welcome back to VideoJ!",
+      });
       navigate("/");
     } catch (error) {
       toast({
@@ -37,7 +41,7 @@ const Login = () => {
     <div className="min-h-screen flex items-center justify-center bg-black bg-opacity-75 bg-[url('https://source.unsplash.com/random/1920x1080?cinema')] bg-cover bg-blend-darken">
       <div className="w-full max-w-md p-8 space-y-8 bg-netflix-black bg-opacity-90 rounded-lg shadow-xl">
         <div className="text-center">
-          <h1 className="text-netflix-red font-bold text-4xl">BingeBuddy</h1>
+          <h1 className="text-netflix-red font-bold text-4xl">VideoJ</h1>
           <h2 className="mt-6 text-3xl font-bold text-white">Sign in</h2>
         </div>
 
@@ -74,7 +78,7 @@ const Login = () => {
                 autoComplete="current-password"
                 required
               />
-              <p className="text-xs text-gray-400 mt-1">Use "password" for demo accounts</p>
+              <p className="text-xs text-gray-400 mt-1">Use any password for demo accounts</p>
             </div>
           </div>
 
@@ -88,7 +92,7 @@ const Login = () => {
 
           <div className="text-center mt-4">
             <p className="text-gray-400">
-              New to BingeBuddy?{" "}
+              New to VideoJ?{" "}
               <Link to="/register" className="text-white hover:underline">
                 Sign up now
               </Link>
@@ -100,10 +104,10 @@ const Login = () => {
               Demo accounts:
             </p>
             <p className="text-xs text-gray-500 mt-1">
-              Admin: admin@bingebuddy.com / password
+              Admin: admin@videoj.com / any password
             </p>
             <p className="text-xs text-gray-500">
-              User: user@example.com / password
+              User: user@example.com / any password
             </p>
           </div>
         </form>

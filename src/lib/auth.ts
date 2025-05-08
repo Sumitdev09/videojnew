@@ -30,12 +30,17 @@ export const login = (email: string, password: string): Promise<User> => {
   return new Promise((resolve, reject) => {
     // Simulate API call
     setTimeout(() => {
-      const user = users.find((u) => u.email === email);
-      if (user && password === "password") { // In a real app, we'd use proper password hashing
+      console.log("Login attempt:", email, password); // Debug log
+      const user = users.find((u) => u.email.toLowerCase() === email.toLowerCase());
+      
+      if (user) {
+        console.log("User found:", user.email); // Debug log
+        // For demo purposes, accept any password
         currentUser = user;
-        localStorage.setItem("binge-buddy-user", JSON.stringify(user));
+        localStorage.setItem("videoj-user", JSON.stringify(user));
         resolve(user);
       } else {
+        console.log("User not found"); // Debug log
         reject(new Error("Invalid email or password"));
       }
     }, 800);
@@ -46,7 +51,7 @@ export const register = (email: string, password: string, name: string): Promise
   return new Promise((resolve, reject) => {
     // Simulate API call
     setTimeout(() => {
-      if (users.some((u) => u.email === email)) {
+      if (users.some((u) => u.email.toLowerCase() === email.toLowerCase())) {
         reject(new Error("Email already in use"));
         return;
       }
@@ -63,7 +68,7 @@ export const register = (email: string, password: string, name: string): Promise
       
       users.push(newUser);
       currentUser = newUser;
-      localStorage.setItem("binge-buddy-user", JSON.stringify(newUser));
+      localStorage.setItem("videoj-user", JSON.stringify(newUser));
       resolve(newUser);
     }, 800);
   });
@@ -71,13 +76,13 @@ export const register = (email: string, password: string, name: string): Promise
 
 export const logout = (): void => {
   currentUser = null;
-  localStorage.removeItem("binge-buddy-user");
+  localStorage.removeItem("videoj-user");
 };
 
 export const getCurrentUser = (): User | null => {
   if (currentUser) return currentUser;
   
-  const storedUser = localStorage.getItem("binge-buddy-user");
+  const storedUser = localStorage.getItem("videoj-user");
   if (storedUser) {
     currentUser = JSON.parse(storedUser);
     return currentUser;
