@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/context/auth-context";
@@ -10,7 +9,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Search, User, Menu, X, ArrowLeft } from "lucide-react";
+import { Search, User, Menu, X } from "lucide-react";
 
 const Navbar = () => {
   const { isAuthenticated, isAdmin, user, logout } = useAuth();
@@ -18,9 +17,6 @@ const Navbar = () => {
   const location = useLocation();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  
-  // Show back button on all pages except the home page
-  const showBackButton = location.pathname !== "/";
 
   useEffect(() => {
     const handleScroll = () => {
@@ -34,10 +30,6 @@ const Navbar = () => {
   const handleLogout = () => {
     logout();
     navigate("/login");
-  };
-
-  const handleBack = () => {
-    navigate(-1);
   };
 
   // Added back the original navigation options
@@ -63,18 +55,6 @@ const Navbar = () => {
     >
       <div className="container mx-auto flex items-center justify-between py-4 px-4 md:px-6">
         <div className="flex items-center">
-          {/* Back button - separate from the logo */}
-          {showBackButton && (
-            <button 
-              onClick={handleBack}
-              className="mr-4 p-2 rounded-full hover:bg-netflix-darkGray transition-colors flex items-center justify-center"
-              aria-label="Go back"
-            >
-              <ArrowLeft size={20} className="text-netflix-text" />
-            </button>
-          )}
-          
-          {/* Logo - clearly separated from back button */}
           <Link to="/" className="flex items-center">
             <h1 className="text-netflix-red font-bold text-2xl md:text-3xl">VideoJ</h1>
           </Link>
