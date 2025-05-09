@@ -1,7 +1,7 @@
 
 import { Content, Subscription } from "@/types";
 
-// Initial mock content data with real video URLs
+// Initial mock content data with real video URLs and updated image links
 const initialContents: Content[] = [
   {
     id: "1",
@@ -123,6 +123,66 @@ const initialContents: Content[] = [
     releaseYear: 1994,
     rating: "16+",
     duration: "2h 22m"
+  },
+  {
+    id: "9",
+    title: "Pulp Fiction",
+    description: "The lives of two mob hitmen, a boxer, a gangster and his wife, and a pair of diner bandits intertwine in four tales of violence and redemption.",
+    thumbnailUrl: "https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=300&h=450&q=80",
+    bannerUrl: "https://images.unsplash.com/photo-1485846234645-a62644f84728?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1920&h=1080&q=80",
+    trailerUrl: "https://www.youtube.com/watch?v=s7EdQ4FqbhY",
+    videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-urban-life-of-a-big-city-at-night-11784-large.mp4",
+    type: "movie",
+    genre: ["Crime", "Drama"],
+    releaseYear: 1994,
+    rating: "18+",
+    duration: "2h 34m",
+    trending: true
+  },
+  {
+    id: "10",
+    title: "The Matrix",
+    description: "A computer hacker learns from mysterious rebels about the true nature of his reality and his role in the war against its controllers.",
+    thumbnailUrl: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=300&h=450&q=80",
+    bannerUrl: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1920&h=1080&q=80",
+    trailerUrl: "https://www.youtube.com/watch?v=vKQi3bBA1y8",
+    videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-digital-animation-of-a-city-at-night-11280-large.mp4",
+    type: "movie",
+    genre: ["Action", "Sci-Fi"],
+    releaseYear: 1999,
+    rating: "16+",
+    duration: "2h 16m",
+    featured: true
+  },
+  {
+    id: "11",
+    title: "Game of Thrones",
+    description: "Nine noble families fight for control over the lands of Westeros, while an ancient enemy returns after being dormant for millennia.",
+    thumbnailUrl: "https://images.unsplash.com/photo-1599719500956-d158a3a7f69b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=300&h=450&q=80",
+    bannerUrl: "https://images.unsplash.com/photo-1488866022504-f2584929ca5f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1920&h=1080&q=80",
+    trailerUrl: "https://www.youtube.com/watch?v=KPLWWIOCOOQ",
+    videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-clouds-moving-over-a-mountain-range-at-dawn-4052-large.mp4",
+    type: "series",
+    genre: ["Action", "Adventure", "Drama"],
+    releaseYear: 2011,
+    rating: "18+",
+    duration: "57m",
+    trending: true
+  },
+  {
+    id: "12",
+    title: "Black Mirror",
+    description: "An anthology series exploring a twisted, high-tech multiverse where humanity's greatest innovations and darkest instincts collide.",
+    thumbnailUrl: "https://images.unsplash.com/photo-1531297484001-80022131f5a1?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=300&h=450&q=80",
+    bannerUrl: "https://images.unsplash.com/photo-1531297484001-80022131f5a1?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1920&h=1080&q=80",
+    trailerUrl: "https://www.youtube.com/watch?v=jROLrhQkK78",
+    videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-digital-native-woman-working-at-home-4807-large.mp4",
+    type: "series",
+    genre: ["Drama", "Sci-Fi", "Thriller"],
+    releaseYear: 2011,
+    rating: "18+",
+    duration: "60m",
+    featured: true
   }
 ];
 

@@ -19,6 +19,7 @@ const ContentCard = ({
   onRemoveFromList
 }: ContentCardProps) => {
   const [isHovered, setIsHovered] = useState(false);
+  const [imageError, setImageError] = useState(false);
   const navigate = useNavigate();
 
   const handleCardClick = () => {
@@ -39,6 +40,10 @@ const ContentCard = ({
     }
   };
 
+  const handleImageError = () => {
+    setImageError(true);
+  };
+
   return (
     <div
       className="relative group transition-transform duration-300 rounded-md overflow-hidden"
@@ -51,11 +56,19 @@ const ContentCard = ({
           isHovered ? 'scale-105 shadow-xl z-10' : ''
         }`}
       >
-        <img
-          src={content.thumbnailUrl}
-          alt={content.title}
-          className="w-full h-full object-cover"
-        />
+        {imageError ? (
+          <div className="w-full h-full flex items-center justify-center bg-netflix-mediumGray text-netflix-text p-2 text-center">
+            <span>{content.title}</span>
+          </div>
+        ) : (
+          <img
+            src={content.thumbnailUrl}
+            alt={content.title}
+            className="w-full h-full object-cover"
+            onError={handleImageError}
+            loading="lazy"
+          />
+        )}
         
         {isHovered && (
           <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent p-4 flex flex-col justify-between opacity-0 group-hover:opacity-100 transition-opacity duration-300">

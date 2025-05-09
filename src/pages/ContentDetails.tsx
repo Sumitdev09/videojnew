@@ -5,7 +5,7 @@ import Layout from "@/components/layout/Layout";
 import { Content } from "@/types";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { contents } from "@/lib/data";
+import { getContentById } from "@/lib/data";
 import { useToast } from "@/components/ui/use-toast";
 import { PlayCircle, Plus, Check, ChevronLeft } from "lucide-react";
 
@@ -18,12 +18,16 @@ const ContentDetails = () => {
   
   useEffect(() => {
     // In a real app, this would fetch from an API
-    const foundContent = contents.find(item => item.id === id);
+    const foundContent = getContentById(id || "");
     
     if (foundContent) {
       setContent(foundContent);
       // Check if content is in my list (would come from API/local storage in real app)
-      setIsInMyList(false);
+      const savedList = localStorage.getItem(`my-list-${localStorage.getItem('user-id')}`);
+      if (savedList) {
+        const myList = JSON.parse(savedList);
+        setIsInMyList(myList.some((item: Content) => item.id === foundContent.id));
+      }
     }
   }, [id]);
   
@@ -34,6 +38,21 @@ const ContentDetails = () => {
   };
   
   const handleToggleMyList = () => {
+    if (!content) return;
+    
+    const userId = localStorage.getItem('user-id');
+    const savedList = localStorage.getItem(`my-list-${userId}`);
+    let myList: Content[] = savedList ? JSON.parse(savedList) : [];
+    
+    if (isInMyList) {
+      // Remove from list
+      myList = myList.filter(item => item.id !== content.id);
+    } else {
+      // Add to list
+      myList.push(content);
+    }
+    
+    localStorage.setItem(`my-list-${userId}`, JSON.stringify(myList));
     setIsInMyList(!isInMyList);
     
     toast({
@@ -73,7 +92,11 @@ const ContentDetails = () => {
         {/* Hero banner */}
         <div 
           className="relative w-full h-[40vh] md:h-[60vh] bg-cover bg-center"
-          style={{ backgroundImage: `url(${content.bannerUrl || content.thumbnailUrl})` }}
+          style={{ 
+            backgroundImage: `url(${content.bannerUrl || content.thumbnailUrl})`,
+            backgroundPosition: 'center',
+            backgroundSize: 'cover'
+          }}
         >
           <div className="absolute inset-0 bg-gradient-to-t from-netflix-black via-transparent to-transparent" />
           <div className="absolute inset-0 bg-gradient-to-r from-netflix-black via-netflix-black/60 to-transparent" />
