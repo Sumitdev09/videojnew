@@ -68,8 +68,15 @@ const ContentDetails = () => {
     setBannerError(true);
   };
 
-  // Fallback banner image
-  const fallbackBanner = "https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=1920&h=1080&q=80";
+  // Enhanced fallback banner image selection
+  const getFallbackBanner = () => {
+    const options = [
+      "https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=1920&h=1080&q=80",
+      "https://images.unsplash.com/photo-1506512479288-fc0e36d34283?auto=format&fit=crop&w=1920&h=1080&q=80",
+      "https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=1920&h=1080&q=80"
+    ];
+    return options[Math.floor(Math.random() * options.length)];
+  };
   
   if (!content) {
     return (
@@ -81,29 +88,31 @@ const ContentDetails = () => {
     );
   }
   
-  // Ensure we have a valid banner URL
-  const bannerUrl = bannerError || !content.bannerUrl ? 
-    (content.thumbnailUrl || fallbackBanner) : 
+  // Ensure we have a valid banner URL with improved fallback logic
+  const bannerUrl = bannerError || !content.bannerUrl || content.bannerUrl.includes("undefined") ? 
+    (content.thumbnailUrl && !content.thumbnailUrl.includes("undefined") ? content.thumbnailUrl : getFallbackBanner()) : 
     content.bannerUrl;
   
   return (
     <Layout>
       <div className="relative">
-        {/* Back button positioned below the header instead of inside the hero banner */}
-        <div className="absolute top-24 left-6 z-40">
-          <Button 
-            variant="ghost" 
-            size="sm"
-            className="bg-black/50 text-white hover:bg-black/70 rounded-full px-4 py-2 flex items-center gap-1"
-            onClick={() => navigate(-1)}
-          >
-            <ChevronLeft className="h-4 w-4" />
-            <span>Back</span>
-          </Button>
+        {/* Back button positioned below the header */}
+        <div className="container mx-auto px-8 relative z-40">
+          <div className="pt-24 pb-4">
+            <Button 
+              variant="ghost" 
+              size="sm"
+              className="bg-black/50 text-white hover:bg-black/70 rounded-full px-4 py-2 flex items-center gap-1"
+              onClick={() => navigate(-1)}
+            >
+              <ChevronLeft className="h-4 w-4" />
+              <span>Back</span>
+            </Button>
+          </div>
         </div>
 
         {/* Hero banner */}
-        <div className="relative w-full h-[40vh] md:h-[60vh] bg-netflix-darkGray">
+        <div className="relative w-full h-[40vh] md:h-[60vh] bg-netflix-darkGray -mt-16">
           <img
             src={bannerUrl}
             alt={content.title}
@@ -112,8 +121,6 @@ const ContentDetails = () => {
           />
           <div className="absolute inset-0 bg-gradient-to-t from-netflix-black via-transparent to-transparent" />
           <div className="absolute inset-0 bg-gradient-to-r from-netflix-black via-netflix-black/60 to-transparent" />
-          
-          {/* Removed back button from here */}
           
           <div className="absolute bottom-0 left-0 p-8 md:p-16 w-full md:w-2/3 space-y-4">
             <h1 className="text-3xl md:text-5xl font-bold text-white">{content.title}</h1>

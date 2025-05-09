@@ -45,13 +45,21 @@ const ContentCard = ({
     setImageError(true);
   };
 
-  // Use a placeholder image URL if the thumbnail is missing or invalid
-  const fallbackImage = "https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=300&h=450&q=80";
+  // Improved fallback images based on content type
+  const getRandomPlaceholderImage = () => {
+    const placeholders = [
+      "https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=300&h=450&q=80",
+      "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=300&h=450&q=80",
+      "https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=300&h=450&q=80",
+      "https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?auto=format&fit=crop&w=300&h=450&q=80"
+    ];
+    return placeholders[Math.floor(Math.random() * placeholders.length)];
+  };
   
-  // Ensure we have a valid image URL
-  const imageUrl = content.thumbnailUrl && content.thumbnailUrl.trim() !== "" 
+  // Ensure we have a valid image URL with more robust checking
+  const imageUrl = content.thumbnailUrl && content.thumbnailUrl.trim() !== "" && !content.thumbnailUrl.includes("undefined")
     ? content.thumbnailUrl 
-    : fallbackImage;
+    : getRandomPlaceholderImage();
 
   return (
     <div

@@ -23,6 +23,7 @@ const FeaturedContent = ({
   onPrevious,
 }: FeaturedContentProps) => {
   const [isMuted, setIsMuted] = useState(true);
+  const [bannerError, setBannerError] = useState(false);
   const navigate = useNavigate();
 
   const handlePlayClick = () => {
@@ -41,14 +42,35 @@ const FeaturedContent = ({
     }
   };
 
+  const handleBannerError = () => {
+    console.log(`Banner error for featured content: ${content.title}`);
+    setBannerError(true);
+  };
+
+  // Select fallback banner from a set of reliable images
+  const getFallbackBanner = () => {
+    const options = [
+      "https://images.unsplash.com/photo-1506512479288-fc0e36d34283?auto=format&fit=crop&w=1920&h=1080&q=80",
+      "https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=1920&h=1080&q=80",
+      "https://images.unsplash.com/photo-1488866022504-f2584929ca5f?auto=format&fit=crop&w=1920&h=1080&q=80"
+    ];
+    return options[Math.floor(Math.random() * options.length)];
+  };
+
+  // Ensure we have a valid banner URL
+  const bannerUrl = bannerError || !content.bannerUrl || content.bannerUrl.includes("undefined") ? 
+    (content.thumbnailUrl && !content.thumbnailUrl.includes("undefined") ? content.thumbnailUrl : getFallbackBanner()) : 
+    content.bannerUrl;
+
   return (
     <div className="relative w-full h-[85vh] overflow-hidden">
       {/* Background image with gradient overlay */}
       <div className="absolute inset-0">
         <img
-          src={content.bannerUrl}
+          src={bannerUrl}
           alt={content.title}
           className="w-full h-full object-cover"
+          onError={handleBannerError}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-netflix-black via-netflix-black/40 to-transparent" />
         <div className="absolute inset-0 bg-gradient-to-r from-netflix-black via-netflix-black/5 to-transparent" />
