@@ -57,6 +57,19 @@ const ContentDetails = () => {
   return (
     <Layout>
       <div className="relative">
+        {/* Back button positioned below the header instead of inside the hero banner */}
+        <div className="absolute top-16 left-6 z-40">
+          <Button 
+            variant="ghost" 
+            size="sm"
+            className="bg-black/50 text-white hover:bg-black/70 rounded-full px-4 py-2 flex items-center gap-1"
+            onClick={() => navigate(-1)}
+          >
+            <ChevronLeft className="h-4 w-4" />
+            <span>Back</span>
+          </Button>
+        </div>
+
         {/* Hero banner */}
         <div 
           className="relative w-full h-[40vh] md:h-[60vh] bg-cover bg-center"
@@ -65,14 +78,7 @@ const ContentDetails = () => {
           <div className="absolute inset-0 bg-gradient-to-t from-netflix-black via-transparent to-transparent" />
           <div className="absolute inset-0 bg-gradient-to-r from-netflix-black via-netflix-black/60 to-transparent" />
           
-          <Button 
-            variant="ghost" 
-            className="absolute top-4 left-4 text-white"
-            onClick={() => navigate(-1)}
-          >
-            <ChevronLeft className="mr-1 h-5 w-5" />
-            Back
-          </Button>
+          {/* Removed back button from here */}
           
           <div className="absolute bottom-0 left-0 p-8 md:p-16 w-full md:w-2/3 space-y-4">
             <h1 className="text-3xl md:text-5xl font-bold text-white">{content.title}</h1>
