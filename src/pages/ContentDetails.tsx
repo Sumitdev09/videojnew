@@ -15,6 +15,7 @@ const ContentDetails = () => {
   const { toast } = useToast();
   const [content, setContent] = useState<Content | null>(null);
   const [isInMyList, setIsInMyList] = useState(false);
+  const [bannerError, setBannerError] = useState(false);
   
   useEffect(() => {
     // In a real app, this would fetch from an API
@@ -62,6 +63,13 @@ const ContentDetails = () => {
         : `"${content?.title}" has been added to your list.`,
     });
   };
+
+  const handleBannerError = () => {
+    setBannerError(true);
+  };
+
+  // Fallback banner image
+  const fallbackBanner = "https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=1920&h=1080&q=80";
   
   if (!content) {
     return (
@@ -73,11 +81,16 @@ const ContentDetails = () => {
     );
   }
   
+  // Ensure we have a valid banner URL
+  const bannerUrl = bannerError || !content.bannerUrl ? 
+    (content.thumbnailUrl || fallbackBanner) : 
+    content.bannerUrl;
+  
   return (
     <Layout>
       <div className="relative">
         {/* Back button positioned below the header instead of inside the hero banner */}
-        <div className="absolute top-16 left-6 z-40">
+        <div className="absolute top-24 left-6 z-40">
           <Button 
             variant="ghost" 
             size="sm"
@@ -90,14 +103,13 @@ const ContentDetails = () => {
         </div>
 
         {/* Hero banner */}
-        <div 
-          className="relative w-full h-[40vh] md:h-[60vh] bg-cover bg-center"
-          style={{ 
-            backgroundImage: `url(${content.bannerUrl || content.thumbnailUrl})`,
-            backgroundPosition: 'center',
-            backgroundSize: 'cover'
-          }}
-        >
+        <div className="relative w-full h-[40vh] md:h-[60vh] bg-netflix-darkGray">
+          <img
+            src={bannerUrl}
+            alt={content.title}
+            className="w-full h-full object-cover"
+            onError={handleBannerError}
+          />
           <div className="absolute inset-0 bg-gradient-to-t from-netflix-black via-transparent to-transparent" />
           <div className="absolute inset-0 bg-gradient-to-r from-netflix-black via-netflix-black/60 to-transparent" />
           

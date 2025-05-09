@@ -41,8 +41,17 @@ const ContentCard = ({
   };
 
   const handleImageError = () => {
+    console.log(`Image error for: ${content.title}`);
     setImageError(true);
   };
+
+  // Use a placeholder image URL if the thumbnail is missing or invalid
+  const fallbackImage = "https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=300&h=450&q=80";
+  
+  // Ensure we have a valid image URL
+  const imageUrl = content.thumbnailUrl && content.thumbnailUrl.trim() !== "" 
+    ? content.thumbnailUrl 
+    : fallbackImage;
 
   return (
     <div
@@ -62,7 +71,7 @@ const ContentCard = ({
           </div>
         ) : (
           <img
-            src={content.thumbnailUrl}
+            src={imageUrl}
             alt={content.title}
             className="w-full h-full object-cover"
             onError={handleImageError}
